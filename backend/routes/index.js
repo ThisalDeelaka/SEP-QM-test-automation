@@ -1,0 +1,37 @@
+const express = require('express');
+const router = express.Router();
+
+router.use('/api/v1/auth', require('./authRoutes'));
+router.use('/api/v1/Booking_data', require('./booking.route'));
+router.use('/api/v1/doctor', require('./doctor.route'));
+router.use('/api/v1/patient', require('./patient.route'));
+router.use('/api/v1/feedback', require('./feedback.route'));
+router.use('/api/v1/dailyquestions', require('./dailyquestions.route'));
+router.use('/api/v1/dailyupdate', require('./dailyupdate.route'));
+router.use('/api/v1/requesition', require('./requesition.route'));
+router.use('/api/v1/serviceAdding', require('./serviceAdding.route'));
+router.use('/api/v1/treatmentHistory', require('./treatmentHistory.route'));
+router.use('/api/v1/report', require('./report.route'));
+router.use('/api/v1/prescription', require('./prescription.route'));
+router.use('/api/v1/staff', require('./staff.route'));
+router.use('/staff/leaves', require('./staffLeaves.route'));
+router.use('/staff/attendance', require('./staffAttendance.route'));
+router.use('/staff/salary', require('./staffSalary.route'));
+router.use('/api/v1/add-user', require('./tempUser.route'));
+router.use('/api/v1/staffAuth', require('./staffAuthRoutes'));
+router.use('/api/v1/count', require('./count.route'));
+router.use('/api/v1/user', require('./user.route'));
+router.use('/api/v1/regularPatient', require('./regularPatient.route'));
+router.use('/api/v1/doctorNote', require('./notes.route'));
+router.use('/api/v1/email_handle', require('./email.route'));
+router.use('/doctortime', require('./DoctorTime.route'));
+router.use('/cashier', require('./cashierRoutes'));
+router.use('/treatment', require('./treatment'));
+router.use('/Inventory', require('./Inventory_Order.route'));
+router.use(require('./Product.route'));
+router.use(require('./ProductOrder.route'));
+router.use(require('./Supplier.route'));
+router.use(require('./Inventory_Item.route'));
+router.use(require('./Appointment.route'));
+
+module.exports = router;
