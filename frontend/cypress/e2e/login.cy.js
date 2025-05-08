@@ -1,28 +1,55 @@
-describe('Login Page', () => {
-    const testUser = {
+describe('Login Page - Valid and Invalid Scenarios', () => {
+    const validUser = {
       email: 'malishasandeepa0000@gmail.com',
       password: 'Ms6023142'
     };
   
-    it('should successfully login with valid credentials', () => {
+    const invalidUser = {
+      email: 'wronguser@example.com',
+      password: 'wrongpassword'
+    };
+  
+    beforeEach(() => {
       cy.visit('/login');
+    });
   
-      // Enter email
-      cy.get('input[type="email"]')
-        .type(testUser.email);
-  
-      // Enter password
-      cy.get('input[type="password"]')
-        .type(testUser.password);
-  
-      // Click Login button
+    it('should successfully login with valid credentials', () => {
+      cy.get('input[type="email"]').type(validUser.email);
+      cy.get('input[type="password"]').type(validUser.password);
       cy.contains('Sign In').click();
   
-      // Expect redirection or success indicator
       cy.url().should('eq', 'http://localhost:5173/');
+      cy.contains('Logout').should('exist');
+    });
   
-      // Optionally check for an element only visible to logged-in users
-      cy.contains('Logout').should('exist'); // if applicable
+    it('should show error for invalid credentials', () => {
+      cy.get('input[type="email"]').type(invalidUser.email);
+      cy.get('input[type="password"]').type(invalidUser.password);
+      cy.contains('Sign In').click();
+  
+      cy.contains("User doesn't exists").should('exist');
+    });
+  
+    it('should show error when email is empty', () => {
+      cy.get('input[type="password"]').type(validUser.password);
+      cy.contains('Sign In').click();
+  
+      cy.contains('Email is required').should('exist');
+    });
+  
+    it('should show error when password is empty', () => {
+      cy.get('input[type="email"]').type(validUser.email);
+      cy.contains('Sign In').click();
+  
+      cy.contains('Password is required').should('exist');
+    });
+  
+    it('should show error for invalid email format', () => {
+      cy.get('input[type="email"]').type('invalid-email');
+      cy.get('input[type="password"]').type('somepassword');
+      cy.contains('Sign In').click();
+  
+      cy.contains('Enter a valid email').should('exist');
     });
   });
   
