@@ -1,101 +1,75 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react'
+import { ShopContext } from '../context/ShopContext';
 import axios from 'axios';
-import { Link, useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 
-function LogIn() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState(null);
-  const navigate = useNavigate();
+const Login = () => {
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
+  const [currentState, setCurrentState] = useState('Login');
+  const { token, setToken, navigate, backendUrl } = useContext(ShopContext)
 
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
+  const [name,setName] = useState('')
+  const [password,setPasword] = useState('')
+  const [email,setEmail] = useState('')
 
-  axios.defaults.withCredentials = true;
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    axios.post('http://localhost:5000/api/v1/auth/login', { email, password })
-    .then(res => {
-      if (res.data.Status === "Success") {
-        window.localStorage.setItem("isLogedIn", true);
-        setMessage("Login successful!");
-        setTimeout(() => {
-          if (res.data.role === "patient") {
-            navigate('/patient');
-          } else if (res.data.role === "doctor") {
-            navigate('/doctor');
+  const onSubmitHandler = async (event) => {
+      event.preventDefault();
+      try {
+        if (currentState === 'Sign Up') {
+          
+          const response = await axios.post(backendUrl + '/api/user/register',{name,email,password})
+          if (response.data.success) {
+            setToken(response.data.token)
+            localStorage.setItem('token',response.data.token)
+          } else {
+            toast.error(response.data.message)
           }
-        }, 1000);
-      } else {
-        setMessage("The Password is incorrect");
+
+        } else {
+
+          const response = await axios.post(backendUrl + '/api/user/login', {email,password})
+          if (response.data.success) {
+            setToken(response.data.token)
+            localStorage.setItem('token',response.data.token)
+          } else {
+            toast.error(response.data.message)
+          }
+
+        }
+
+
+      } catch (error) {
+        console.log(error)
+        toast.error(error.message)
       }
-    }).catch(err => {
-      console.log(err);
-      setMessage("An error occurred. Please try again later.");
-    });
-  };
+  }
+
+  useEffect(()=>{
+    if (token) {
+      navigate('/')
+    }
+  },[token])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[url('https://img.freepik.com/free-vector/blue-background-with-abstract-dynamic-shapes_1393-161.jpg?t=st=1714939606~exp=1714940206~hmac=7eada5115632c73a73ada70193b990025d8a588bc40a1185659a9c1fc88c445c')] bg-cover py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-lg shadow-md">
-      <img src="https://sayora.lk/wp-content/uploads/2023/04/SAYORA-LOGO-NEW.png" alt="Sayora Logo" className="mx-auto mb-4 w-32 h-32" />
-        <h2 className="text-center text-3xl font-extrabold text-cyan-800">Log in</h2>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <input type="hidden" name="remember" defaultValue="true" />
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <input
-                id="email-address"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-cyan-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-                value={email}
-                onChange={handleEmailChange}
-              />
-            </div>
+    <form onSubmit={onSubmitHandler} className='flex flex-col items-center w-[90%] sm:max-w-96 m-auto mt-14 gap-4 text-gray-800'>
+        <div className='inline-flex items-center gap-2 mb-2 mt-10'>
+            <p className='prata-regular text-3xl'>{currentState}</p>
+            <hr className='border-none h-[1.5px] w-8 bg-gray-800' />
+        </div>
+        {currentState === 'Login' ? '' : <input onChange={(e)=>setName(e.target.value)} value={name} type="text" className='w-full px-3 py-2 border border-gray-800' placeholder='Name' required/>}
+        <input onChange={(e)=>setEmail(e.target.value)} value={email} type="email" className='w-full px-3 py-2 border border-gray-800' placeholder='Email' required/>
+        <input onChange={(e)=>setPasword(e.target.value)} value={password} type="password" className='w-full px-3 py-2 border border-gray-800' placeholder='Password' required/>
+        <div className='w-full flex justify-between text-sm mt-[-8px]'>
+            <p className=' cursor-pointer'>Forgot your password?</p>
+            {
+              currentState === 'Login' 
+              ? <p onClick={()=>setCurrentState('Sign Up')} className=' cursor-pointer'>Create account</p>
+              : <p onClick={()=>setCurrentState('Login')} className=' cursor-pointer'>Login Here</p>
+            }
+        </div>
+        <button className='bg-black text-white font-light px-8 py-2 mt-4'>{currentState === 'Login' ? 'Sign In' : 'Sign Up'}</button>
+    </form>
+  )
+}
 
-
-            
-            <div>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-cyan-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                value={password}
-                onChange={handlePasswordChange}
-              />
-            </div>
-          </div>
-          {message && (
-            <div className="text-center py-2 text-sm text-cyan-600">
-              {message}
-            </div>
-          )}
-          <div>
-            <button
-              type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500"
-            >
-              Sign in
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-};
-
-export default LogIn;
+export default Login

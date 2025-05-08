@@ -1,45 +1,30 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800&family=Play:wght@700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Prata&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+a.active hr{
+    display: block;
+}
 
-@layer base {
-    html {
-      @apply font-Montserrat;
-    }
-    body {
-      background: white;
-      overflow: hidden;
-    }
-    h1 {
-      @apply text-xl font-medium capitalize;
-    }
-    
-  }
-  
-  .link {
-    @apply p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium;
-  }
-  
-  .active {
-    @apply text-blue-600 bg-blue-100;
+*{
+    font-family: Outfit;
+}
+
+.prata-regular {
+    font-family: "Prata", serif;
+    font-weight: 400;
+    font-style: normal;
   }
 
-  .desktop-view-only {
-    display: none; /* Hide by default */
-  }
-
-  .hidden-space {
-    width: 50px; /* Adjust the width as needed */
-    overflow: hidden;
-    white-space: nowrap;
+  ::-webkit-scrollbar{
+    display: none;
   }
   
-  @media (min-width: 768px) {
-    .desktop-view-only {
-      display: block; /* Show on desktop (screen width >= 768px) */
+  @media (max-width:640px) {
+    a.active{
+        background-color: black;
+        color: white;
     }
   }
-  
