@@ -1,4 +1,5 @@
 import 'cypress-plugin-tab';
+import 'cypress-axe';
 
 // ***********************************************
 // This example commands.js shows you how to
