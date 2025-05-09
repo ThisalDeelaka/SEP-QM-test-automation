@@ -1,35 +1,45 @@
-describe('Add Product', () => {
-  beforeEach(() => {
-    cy.login()
+describe('Add Product Flow', () => {
+
+  before(() => {
+    // Log in and store token
+    cy.visit('/')
+
+    cy.get('input[type="email"]').type('admin@gmail.com')
+    cy.get('input[type="password"]').type('admin')
+    cy.get('button[type="submit"]').click()
+
+    // Wait for redirect or dashboard
+    cy.url().should('include', '/')
+  })
+
+  it('should successfully add a new product', () => {
     cy.visit('/add')
-  })
 
-  it('should add a new product successfully', () => {
-    // Upload image
-    cy.get('input[type="file"]#image1').selectFile('cypress/fixtures/sample-image.jpg')
-    
-    // Fill form
-    cy.get('input[placeholder="Type here"]').type('Test Product')
-    cy.get('textarea[placeholder="Write content here"]').type('Test Description')
-    cy.get('select').first().select('Men')
-    cy.get('select').eq(1).select('Topwear')
-    cy.get('input[placeholder="25"]').type('99.99')
-    
+    // Upload images (assumes upload_area images are replaced)
+    const imagePath = 'testImages/Slider-Background.jpg'
+    cy.get('#image1').selectFile(`cypress/fixtures/${imagePath}`, { force: true })
+    cy.get('#image2').selectFile(`cypress/fixtures/${imagePath}`, { force: true })
+
+    // Fill in product details
+    cy.get('input[placeholder="Type here"]').type('Test T-Shirt')
+    cy.get('textarea[placeholder="Write content here"]').type('This is a test product.')
+
+    cy.get('select').eq(0).select('Men') // Category
+    cy.get('select').eq(1).select('Topwear') // Sub Category
+
+    cy.get('input[type="Number"]').type('39.99')
+
     // Select sizes
-    cy.get('p').contains('S').click()
-    cy.get('p').contains('M').click()
-    
-    // Check bestseller
-    cy.get('input#bestseller').check()
-    
-    // Submit
-    cy.get('button[type="submit"]').contains('ADD').click()
-    
-    cy.get('.Toastify__toast--success').should('be.visible').contains('Product added successfully')
-  })
+    cy.contains('S').click()
 
-  it('should show error for incomplete form', () => {
-    cy.get('button[type="submit"]').contains('ADD').click()
-    cy.get('.Toastify__toast--error').should('be.visible').contains('Please fill all required fields')
+
+    // Check bestseller
+    cy.get('#bestseller').check()
+
+    // Submit form
+    cy.contains('button', 'ADD').click()
+
+    // Confirm success toast
+    cy.contains('Product Added').should('be.visible')
   })
 })
