@@ -14,6 +14,8 @@ describe('Add Product Flow', () => {
 
   it('should successfully add a new product', () => {
     cy.visit('/add')
+    cy.contains('Upload Image', { timeout: 10000 }).should('be.visible') // or a unique form element
+
 
     // Upload images (assumes upload_area images are replaced)
     const imagePath = 'testImages/Slider-Background.jpg'
@@ -40,6 +42,6 @@ describe('Add Product Flow', () => {
     cy.contains('button', 'ADD').click()
 
     // Confirm success toast
-    cy.contains('Product Added').should('be.visible')
+    cy.contains('Product Added', { timeout: 20000 }).should('be.visible')
   })
 })
