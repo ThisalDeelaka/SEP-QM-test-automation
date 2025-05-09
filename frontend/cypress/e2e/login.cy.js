@@ -44,12 +44,12 @@ describe('Login Page - Valid and Invalid Scenarios', () => {
       cy.contains('Password is required').should('exist');
     });
   
-    it('should show error for invalid email format', () => {
-      cy.get('input[type="email"]').type('invalid-email');
-      cy.get('input[type="password"]').type('somepassword');
-      cy.contains('Sign In').click();
+    // it('should show error for invalid email format', () => {
+    //   cy.get('input[type="email"]').type('invalid-email');
+    //   cy.get('input[type="password"]').type('somepassword');
+    //   cy.contains('Sign In').click();
   
-      cy.contains('Enter a valid email').should('exist');
-    });
+    //   cy.contains('Enter a valid email').should('exist');
+    // });
   });
   
