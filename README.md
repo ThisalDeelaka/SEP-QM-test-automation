@@ -40,7 +40,7 @@ This project uses **Cypress** for end-to-end automation.
 2. Open Cypress:
 
   ```bash
-   cd cypress && npx cypress open
+   npx cypress open
    ```
 3. Select a test spec (e.g., \`login.spec.js\`) and run interactively.
 
